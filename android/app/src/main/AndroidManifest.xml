@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ArtemOslopov.sleepy">
    <application
-        android:label="sleepy"
+        android:label="Sleepy - Новый подход ко сну"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

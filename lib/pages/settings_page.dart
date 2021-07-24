@@ -78,23 +78,23 @@ class _SettingsPageState extends State<SettingsPage> {
                       margin: EdgeInsets.symmetric(vertical: height * 0.025),
                     ),
                     Expanded(child: Container()),
-                    Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                            color: Color(0xFFBE97E5),
-                            width: 2.0,
-                            style: BorderStyle.solid),
-                        borderRadius: BorderRadius.all(Radius.circular(8.0)),
+                    InkWell(
+                      onTap: () => selectTime(
+                        context,
+                        box,
                       ),
-                      width: 94.0,
-                      height: 52.0,
-                      margin: EdgeInsets.symmetric(vertical: 8.0),
-                      padding: EdgeInsets.symmetric(vertical: 10.5),
-                      child: InkWell(
-                        onTap: () => selectTime(
-                          context,
-                          box,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                              color: Color(0xFFBE97E5),
+                              width: 2.0,
+                              style: BorderStyle.solid),
+                          borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
+                        width: 94.0,
+                        height: 52.0,
+                        margin: EdgeInsets.symmetric(vertical: 8.0),
+                        padding: EdgeInsets.symmetric(vertical: 10.5),
                         child: Center(
                           widthFactor: 94.0,
                           heightFactor: 52.0,
