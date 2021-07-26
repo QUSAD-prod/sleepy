@@ -1,31 +1,26 @@
-import 'package:hive/hive.dart';
+class MyTime {
 
-part 'time.g.dart';
+  MyTime();
 
-@HiveType(typeId: 32)
-class SettingsTime {
-  @HiveField(0)
-  int hour;
-  @HiveField(1)
-  int minute;
+  DateTime getDefault() {
+    DateTime now = DateTime.now();
+    return DateTime(now.year, now.month, now.day, 7, 30);
+  }
 
-  SettingsTime({
-    required this.hour,
-    required this.minute,
-  });
+  DateTime addTime(int hour, int minute) {
+    DateTime now = DateTime.now();
+    return DateTime(now.year, now.month, now.day, hour, minute);
+  }
 
-  @override
-  String toString() {
-    String hour = this.hour.toString();
-    String minute = this.minute.toString();
-
-    if (hour.length == 1) {
+  String getTimeFromDateTime(DateTime time) {
+    String hour = time.hour.toString();
+    String minute = time.minute.toString();
+    if (hour.length < 2) {
       hour = "0" + hour;
     }
-    if (minute.length == 1) {
+    if (minute.length < 2) {
       minute = "0" + minute;
     }
-
     return hour + ":" + minute;
   }
 }
