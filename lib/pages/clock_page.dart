@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sleepy/components/clock.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:sleepy/components/clockWidget.dart';
+import 'package:sleepy/components/clock_page_button.dart';
 import 'package:sleepy/components/time.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import '../main.dart';
 
 class ClockPage extends StatefulWidget {
   @override
@@ -15,7 +21,7 @@ class _ClockPageState extends State<ClockPage> {
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final height = MediaQuery.of(context).size.height;
-
+    tz.initializeTimeZones();
     return ValueListenableBuilder(
         valueListenable: Hive.box("data").listenable(),
         builder: (context, Box box, widget) {
@@ -66,194 +72,72 @@ class _ClockPageState extends State<ClockPage> {
                 ),
                 Container(
                   margin: EdgeInsets.only(bottom: height * 0.015),
-                  child: getWidget(width, box),
+                  width: width * 0.84,
+                  child: ClockWidget(isActive: box.get("is_sleep", defaultValue: false), width: width, box: box),
                 ),
                 Container(
-                  margin: EdgeInsets.only(bottom: height * 0.03),
-                  child: bottomButton(width, box),
-                ),
+                    margin: EdgeInsets.only(bottom: height * 0.03),
+                    width: width * 0.84,
+                    child: MyButton(
+                      isActive: box.get("is_sleep", defaultValue: false),
+                      onClick: buttonClick(box),
+                    )),
               ],
             ),
           );
         });
   }
 
-  SvgPicture getIcon(bool isActive, double width) {
-    if (isActive) {
-      return SvgPicture.asset(
-        "res/bell_icon.svg",
-        color: Colors.white,
-        width: width * 0.135 * 0.42,
-        height: width * 0.135 * 0.47,
-      );
-    } else {
-      return SvgPicture.asset(
-        "res/bed_icon.svg",
-        color: Colors.white,
-      );
-    }
+  Function buttonClick(Box box) {
+    return () => {
+          box.put("is_sleep", !box.get("is_sleep", defaultValue: false)),
+          if (box.get("is_sleep", defaultValue: false) == true)
+            {
+              addNotification(box),
+            }
+          else
+            {
+              flutterLocalNotificationsPlugin.cancel(0),
+            }
+        };
   }
 
-  String getWidgetText1(Box box) {
-    SettingsTime time =
-        box.get("alarm_time", defaultValue: SettingsTime(hour: 7, minute: 30));
-    String hour;
-    switch (time.hour) {
-      case 1:
-      case 21:
-        hour = " час";
-        break;
-      case 2:
-      case 3:
-      case 4:
-      case 22:
-      case 23:
-      case 24:
-        hour = " часа";
-        break;
-      default:
-        hour = " часов";
-        break;
-    }
-    return box.get("is_sleep", defaultValue: false)
-        ? "Разбужу через " + time.toString() + hour
-        : "Вы хотите спать";
-  }
-
-  String getWidgetText2(Box box) {
-    SettingsTime time =
-        box.get("alarm_time", defaultValue: SettingsTime(hour: 7, minute: 30));
-    String hour;
-    String day;
-    switch (time.hour) {
-      case 1:
-      case 21:
-        hour = " час";
-        break;
-      case 2:
-      case 3:
-      case 4:
-      case 22:
-      case 23:
-      case 24:
-        hour = " часа";
-        break;
-      default:
-        hour = " часов";
-        break;
-    }
-    if (time.hour >= 4 && time.hour <= 11) {
-      day = "Утром в ";
-    } else if (time.hour >= 12 && time.hour <= 16) {
-      day = "Днём в ";
-    } else if (time.hour >= 17 && time.hour <= 23) {
-      day = "Вечером в ";
-    } else {
-      day = "Ночью в ";
-    }
-    return box.get("is_sleep", defaultValue: false)
-        ? day + time.toString()
-        : time.toString() + hour;
-  }
-
-  Widget getWidget(double width, Box box) {
-    return Container(
-      width: width * 0.84,
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(24.0),
-      ),
-      child: Container(
-        child: Row(
-          children: [
-            Container(
-              width: width * 0.135,
-              height: width * 0.135,
-              decoration: BoxDecoration(
-                color: box.get("is_sleep", defaultValue: false)
-                    ? Color(0xFF65C7FF)
-                    : Color(0xFFBE97E5),
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: Center(
-                child: getIcon(
-                  box.get(
-                    "is_sleep",
-                    defaultValue: false,
-                  ),
-                  width,
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: width * 0.84 * 0.04),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    getWidgetText1(box),
-                    style: TextStyle(
-                      color: Color(0xFF9B99A9),
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Text(
-                    getWidgetText2(box),
-                    style: TextStyle(
-                      color: Color(0xFF160647),
-                      fontSize: 20,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(child: Container()),
-          ],
-        ),
-      ),
+  Future<void> addNotification(Box box) async {
+    DateTime time = box.get("alarm_time", defaultValue: MyTime().getDefault());
+    var scheduledNotificationDateTime = tz.TZDateTime.now(tz.local).add(
+      Duration(hours: time.hour, minutes: time.minute),
     );
-  }
 
-  Widget bottomButton(double width, Box box) {
-    return Container(
-      width: width * 0.84,
-      decoration: BoxDecoration(
-        color: box.get("is_sleep", defaultValue: false)
-            ? Color(0xFFFFFFFF).withOpacity(0.0)
-            : Color(0xFF5868F0),
-        borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(
-          color: Color(0xFF5868F0),
-          width: 2.0,
-          style: BorderStyle.solid,
-        ),
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(16.0),
-          onTap: () => box.put("is_sleep", !box.get("is_sleep", defaultValue: false)),
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 24.5),
-            child: Center(
-              child: Text(
-                box.get("is_sleep", defaultValue: false)
-                    ? "Перестать спать"
-                    : "Пойти спать",
-                style: TextStyle(
-                  color: Color(0xFFFFFFFF),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        ),
-      ),
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      'alarm',
+      'sleepy',
+      'sleepy alarm',
+      icon: 'sleepy_icon_notification',
+      largeIcon: DrawableResourceAndroidBitmap('sleepy_icon_notification'),
+      playSound: true,
+      enableVibration: box.get('alarm_vibration', defaultValue: true),
+      priority: Priority.high,
+      importance: Importance.max,
+      showWhen: false,
+    );
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+    var platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      "Sleepy - Новый подход ко сну",
+      "Пора вставать",
+      scheduledNotificationDateTime,
+      platformChannelSpecifics,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
     );
   }
 }

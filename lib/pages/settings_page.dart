@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -15,9 +16,6 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
-    if (!Hive.isAdapterRegistered(32)) {
-      Hive.registerAdapter(SettingsTimeAdapter());
-    }
     return ValueListenableBuilder(
       valueListenable: Hive.box("data").listenable(),
       builder: (context, Box box, widget) {
@@ -99,14 +97,12 @@ class _SettingsPageState extends State<SettingsPage> {
                           widthFactor: 94.0,
                           heightFactor: 52.0,
                           child: Text(
-                            (box.get(
-                              "alarm_time",
-                              defaultValue: SettingsTime(
-                                hour: 7,
-                                minute: 30,
+                            MyTime().getTimeFromDateTime(
+                              box.get(
+                                "alarm_time",
+                                defaultValue: MyTime().getDefault(),
                               ),
-                            ) as SettingsTime)
-                                .toString(),
+                            ),
                             style: TextStyle(
                               color: Color(0xFF160647),
                               fontSize: 25,
@@ -319,12 +315,9 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   Future<Null> selectTime(BuildContext context, Box box) async {
-    SettingsTime boxTime = await box.get(
+    DateTime boxTime = await box.get(
       "alarm_time",
-      defaultValue: SettingsTime(
-        hour: 7,
-        minute: 30,
-      ),
+      defaultValue: MyTime().getDefault(),
     );
     TimeOfDay selectedTime = TimeOfDay(
       hour: boxTime.hour,
@@ -344,7 +337,7 @@ class _SettingsPageState extends State<SettingsPage> {
       },
     );
     if (temp != null) {
-      box.put("alarm_time", SettingsTime(hour: temp.hour, minute: temp.minute));
+      box.put("alarm_time", MyTime().addTime(temp.hour, temp.minute));
     }
   }
 }

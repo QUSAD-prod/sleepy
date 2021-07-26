@@ -12,13 +12,10 @@ class Clock extends StatelessWidget {
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final double height = MediaQuery.of(context).size.height;
-    if (!Hive.isAdapterRegistered(32)) {
-      Hive.registerAdapter(SettingsTimeAdapter());
-    }
     return ValueListenableBuilder(
         valueListenable: Hive.box("data").listenable(),
         builder: (context, Box box, widget) {
-          SettingsTime bellTime = box.get("alarm_time", defaultValue: SettingsTime(hour: 7, minute: 30));
+          DateTime bellTime = box.get("alarm_time", defaultValue: MyTime().getDefault());
           return Container(
             child: CustomPaint(
               painter: ClockPaint(),
