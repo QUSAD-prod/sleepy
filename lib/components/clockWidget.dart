@@ -26,12 +26,12 @@ class ClockWidget extends StatelessWidget {
     ..add(
       _ClockWidgetProps.color,
       Color(0xFFBE97E5).tweenTo(Color(0xFF65C7FF)),
-      0.02.seconds,
+      10.milliseconds,
     )
     ..add(
       _ClockWidgetProps.opacity,
       1.0.tweenTo(0.0),
-      0.02.seconds,
+      10.milliseconds,
     );
 
   @override

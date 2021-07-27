@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:supercharged/supercharged.dart';
 
@@ -9,33 +10,39 @@ enum _ButtonProps {
 }
 
 class MyButton extends StatelessWidget {
+
   final bool isActive;
   Function onClick;
+  Box box;
 
   MyButton({
     required this.isActive,
     required this.onClick,
+    required this.box,
   });
 
   var ButtonTween = MultiTween<_ButtonProps>()
     ..add(
       _ButtonProps.color,
       Color(0xFFFFFFFF).withOpacity(0.0).tweenTo(Color(0xFF5868F0)),
-      0.02.seconds,
+      10.milliseconds,
     )
     ..add(
       _ButtonProps.inkWellColor,
       Colors.white.withOpacity(0.8).tweenTo(Colors.white.withOpacity(0.0)),
-      0.02.seconds,
+      10.milliseconds,
     )
     ..add(
       _ButtonProps.opacity,
       1.0.tweenTo(0.0),
-      0.02.seconds,
+      10.milliseconds,
     );
 
   @override
   Widget build(BuildContext context) {
+    if (isActive != box.get("")) {
+    
+    }
     return CustomAnimation<MultiTweenValues<_ButtonProps>>(
       control: !isActive
           ? CustomAnimationControl.play

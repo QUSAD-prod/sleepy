@@ -328,7 +328,7 @@ class _SettingsPageState extends State<SettingsPage> {
       initialTime: selectedTime,
       cancelText: "Отмена",
       confirmText: "Ок",
-      helpText: "Сколько вы хотите поспать?",
+      helpText: "Сколько вы хотите спать?",
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: true),

@@ -1,6 +1,7 @@
+import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:sleepy/components/clock.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -73,37 +74,65 @@ class _ClockPageState extends State<ClockPage> {
                 Container(
                   margin: EdgeInsets.only(bottom: height * 0.015),
                   width: width * 0.84,
-                  child: ClockWidget(isActive: box.get("is_sleep", defaultValue: false), width: width, box: box),
+                  child: ClockWidget(
+                    isActive: box.get("is_sleep", defaultValue: false),
+                    width: width,
+                    box: box,
+                  ),
                 ),
                 Container(
-                    margin: EdgeInsets.only(bottom: height * 0.03),
-                    width: width * 0.84,
-                    child: MyButton(
-                      isActive: box.get("is_sleep", defaultValue: false),
-                      onClick: buttonClick(box),
-                    )),
+                  margin: EdgeInsets.only(bottom: height * 0.03),
+                  width: width * 0.84,
+                  child: MyButton(
+                    isActive: box.get("is_sleep", defaultValue: false),
+                    onClick: buttonClick(box),
+                    box: box,
+                  ),
+                ),
               ],
             ),
           );
         });
   }
 
+  void alarmReset(Box box) {
+    //TODO add stats
+    box.put("alarm_start", null);
+    box.put("alarm_stop", null);
+  }
+
   Function buttonClick(Box box) {
+    DateTime temp = box.get("alarm_time", defaultValue: MyTime().getDefault());
     return () => {
           box.put("is_sleep", !box.get("is_sleep", defaultValue: false)),
           if (box.get("is_sleep", defaultValue: false) == true)
             {
+              box.put("alarm_start", DateTime.now()),
+              box.put(
+                "alarm_stop",
+                DateTime.now().add(
+                  Duration(
+                    hours: temp.hour,
+                    minutes: temp.minute,
+                  ),
+                ),
+              ),
               addNotification(box),
             }
           else
             {
+              //alarmReset(box),
               flutterLocalNotificationsPlugin.cancel(0),
             }
         };
   }
 
   Future<void> addNotification(Box box) async {
-    DateTime time = box.get("alarm_time", defaultValue: MyTime().getDefault());
+    DateTime time = box.get(
+      "alarm_time",
+      defaultValue: MyTime().getDefault(),
+    );
+
     var scheduledNotificationDateTime = tz.TZDateTime.now(tz.local).add(
       Duration(hours: time.hour, minutes: time.minute),
     );
