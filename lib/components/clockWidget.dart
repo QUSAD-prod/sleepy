@@ -2,15 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:simple_animations/simple_animations.dart';
 import 'package:sleepy/components/time.dart';
-import 'package:supercharged/supercharged.dart';
-
-enum _ClockWidgetProps {
-  color,
-  opacity,
-}
-
 class ClockWidget extends StatelessWidget {
   final bool isActive;
   final double width;
@@ -22,37 +14,8 @@ class ClockWidget extends StatelessWidget {
     required this.box,
   });
 
-  final MultiTween<_ClockWidgetProps> _clockWidgetTween =
-      MultiTween<_ClockWidgetProps>()
-        ..add(
-          _ClockWidgetProps.color,
-          Color(0xFFBE97E5).tweenTo(Color(0xFF65C7FF)),
-          10.milliseconds,
-        )
-        ..add(
-          _ClockWidgetProps.opacity,
-          1.0.tweenTo(0.0),
-          10.milliseconds,
-        );
-
   @override
   Widget build(BuildContext context) {
-    return CustomAnimation<MultiTweenValues<_ClockWidgetProps>>(
-      control: isActive
-          ? CustomAnimationControl.play
-          : CustomAnimationControl.playReverse,
-      tween: _clockWidgetTween,
-      curve: Curves.easeInOut,
-      builder: _clockWidgetBuilder,
-    );
-  }
-
-  Widget _clockWidgetBuilder(
-    context,
-    child,
-    MultiTweenValues<_ClockWidgetProps> value,
-  ) {
-    box.put("clock_widget_old", isActive);
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -66,59 +29,31 @@ class ClockWidget extends StatelessWidget {
               width: width * 0.135,
               height: width * 0.135,
               decoration: BoxDecoration(
-                color: getColor(box, isActive, value),
+                color: getColor(),
                 borderRadius: BorderRadius.circular(16.0),
               ),
-              child: getImage(box, isActive, value),
+              child: getImage(),
             ),
             Container(
               margin: EdgeInsets.only(left: width * 0.84 * 0.04),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Stack(
-                    children: [
-                      Text(
-                        getWidgetText1(box, true),
-                        style: TextStyle(
-                          color: Color(0xFF9B99A9).withOpacity(
-                              1 - value.get(_ClockWidgetProps.opacity)),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        getWidgetText1(box, false),
-                        style: TextStyle(
-                          color: Color(0xFF9B99A9).withOpacity(
-                              value.get(_ClockWidgetProps.opacity)),
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    isActive ? getWidgetText1(box, true) : getWidgetText1(box, false),
+                    style: TextStyle(
+                      color: Color(0xFF9B99A9),
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  Stack(
-                    children: [
-                      Text(
-                        getWidgetText2(box, true),
-                        style: TextStyle(
-                          color: Color(0xFF160647).withOpacity(
-                              1 - value.get(_ClockWidgetProps.opacity)),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        getWidgetText2(box, false),
-                        style: TextStyle(
-                          color: Color(0xFF160647).withOpacity(
-                              value.get(_ClockWidgetProps.opacity)),
-                          fontSize: 20,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
+                  Text(
+                    isActive ? getWidgetText2(box, true) : getWidgetText2(box, false),
+                    style: TextStyle(
+                      color: Color(0xFF160647),
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ],
               ),
@@ -131,7 +66,9 @@ class ClockWidget extends StatelessWidget {
   }
 
   String getWidgetText1(Box box, bool flag) {
-    DateTime time = box.get("alarm_time", defaultValue: MyTime().getDefault());
+    DateTime timeStop = box.get("alarm_stop");
+    DateTime now = DateTime.now();
+    DateTime time = timeStop.add(Duration(hours: -now.hour, minutes: -now.minute,));
     String hour;
     switch (time.hour) {
       case 1:
@@ -192,68 +129,32 @@ class ClockWidget extends StatelessWidget {
         : MyTime().getTimeFromDateTime(time) + hour;
   }
 
-  Color getColor(
-    Box box,
-    bool isActive,
-    MultiTweenValues<_ClockWidgetProps> value,
-  ) {
-    if (box.get("clock_widget_old") != null &&
-        box.get("clock_widget_old") != isActive) {
-      return value.get(_ClockWidgetProps.color);
+  Color getColor() {
+    if (isActive) {
+      return Color(0xFF65C7FF);
     } else {
-      if (isActive) {
-        return Color(0xFFBE97E5);
-      } else {
-        return Color(0xFF65C7FF);
-      }
+      return Color(0xFFBE97E5);
     }
   }
 
-  Widget getImage(
-    Box box,
-    bool isActive,
-    MultiTweenValues<_ClockWidgetProps> value,
-  ) {
-    if (box.get("clock_widget_old") != null &&
-        box.get("clock_widget_old") != isActive) {
-      return Stack(
-        children: [
-          Center(
-            child: SvgPicture.asset(
-              "res/bell_icon.svg",
-              color: Colors.white
-                  .withOpacity(1.0 - value.get(_ClockWidgetProps.opacity)),
-              width: width * 0.135 * 0.42,
-              height: width * 0.135 * 0.47,
-            ),
-          ),
-          Center(
-            child: SvgPicture.asset(
-              "res/bed_icon.svg",
-              color: Colors.white
-                  .withOpacity(value.get(_ClockWidgetProps.opacity)),
-            ),
-          ),
-        ],
+  Widget getImage() {
+    if (isActive) {
+      return Center(
+        child: SvgPicture.asset(
+          "res/bell_icon.svg",
+          color: Colors.white,
+          width: width * 0.135 * 0.42,
+          height: width * 0.135 * 0.47,
+        ),
       );
     } else {
-      if (!isActive) {
-        return Center(
-          child: SvgPicture.asset(
-            "res/bell_icon.svg",
-            color: Colors.white,
-            width: width * 0.135 * 0.42,
-            height: width * 0.135 * 0.47,
-          ),
-        );
-      } else {
-        return Center(
-          child: SvgPicture.asset(
-            "res/bed_icon.svg",
-            color: Colors.white,
-          ),
-        );
-      }
+      return Center(
+        child: SvgPicture.asset(
+          "res/bed_icon.svg",
+          color: Colors.white,
+        ),
+      );
     }
   }
+
 }
