@@ -22,17 +22,18 @@ class ClockWidget extends StatelessWidget {
     required this.box,
   });
 
-  final MultiTween<_ClockWidgetProps> _clockWidgetTween = MultiTween<_ClockWidgetProps>()
-    ..add(
-      _ClockWidgetProps.color,
-      Color(0xFFBE97E5).tweenTo(Color(0xFF65C7FF)),
-      10.milliseconds,
-    )
-    ..add(
-      _ClockWidgetProps.opacity,
-      1.0.tweenTo(0.0),
-      10.milliseconds,
-    );
+  final MultiTween<_ClockWidgetProps> _clockWidgetTween =
+      MultiTween<_ClockWidgetProps>()
+        ..add(
+          _ClockWidgetProps.color,
+          Color(0xFFBE97E5).tweenTo(Color(0xFF65C7FF)),
+          10.milliseconds,
+        )
+        ..add(
+          _ClockWidgetProps.opacity,
+          1.0.tweenTo(0.0),
+          10.milliseconds,
+        );
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +52,7 @@ class ClockWidget extends StatelessWidget {
     child,
     MultiTweenValues<_ClockWidgetProps> value,
   ) {
+    box.put("clock_widget_old", isActive);
     return Container(
       padding: EdgeInsets.all(16.0),
       decoration: BoxDecoration(
@@ -64,27 +66,10 @@ class ClockWidget extends StatelessWidget {
               width: width * 0.135,
               height: width * 0.135,
               decoration: BoxDecoration(
-                color: value.get(_ClockWidgetProps.color),
+                color: getColor(box, isActive, value),
                 borderRadius: BorderRadius.circular(16.0),
               ),
-              child: Stack(
-                children: [
-                  Center(
-                    child: SvgPicture.asset(
-                      "res/bell_icon.svg",
-                      color: Colors.white.withOpacity(1.0 - value.get(_ClockWidgetProps.opacity)),
-                      width: width * 0.135 * 0.42,
-                      height: width * 0.135 * 0.47,
-                    ),
-                  ),
-                  Center(
-                    child: SvgPicture.asset(
-                      "res/bed_icon.svg",
-                      color: Colors.white.withOpacity(value.get(_ClockWidgetProps.opacity)),
-                    ),
-                  ),
-                ],
-              ),
+              child: getImage(box, isActive, value),
             ),
             Container(
               margin: EdgeInsets.only(left: width * 0.84 * 0.04),
@@ -96,7 +81,8 @@ class ClockWidget extends StatelessWidget {
                       Text(
                         getWidgetText1(box, true),
                         style: TextStyle(
-                          color: Color(0xFF9B99A9).withOpacity(1 - value.get(_ClockWidgetProps.opacity)),
+                          color: Color(0xFF9B99A9).withOpacity(
+                              1 - value.get(_ClockWidgetProps.opacity)),
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
@@ -104,7 +90,8 @@ class ClockWidget extends StatelessWidget {
                       Text(
                         getWidgetText1(box, false),
                         style: TextStyle(
-                          color: Color(0xFF9B99A9).withOpacity(value.get(_ClockWidgetProps.opacity)),
+                          color: Color(0xFF9B99A9).withOpacity(
+                              value.get(_ClockWidgetProps.opacity)),
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
@@ -116,7 +103,8 @@ class ClockWidget extends StatelessWidget {
                       Text(
                         getWidgetText2(box, true),
                         style: TextStyle(
-                          color: Color(0xFF160647).withOpacity(1 - value.get(_ClockWidgetProps.opacity)),
+                          color: Color(0xFF160647).withOpacity(
+                              1 - value.get(_ClockWidgetProps.opacity)),
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                         ),
@@ -124,7 +112,8 @@ class ClockWidget extends StatelessWidget {
                       Text(
                         getWidgetText2(box, false),
                         style: TextStyle(
-                          color: Color(0xFF160647).withOpacity(value.get(_ClockWidgetProps.opacity)),
+                          color: Color(0xFF160647).withOpacity(
+                              value.get(_ClockWidgetProps.opacity)),
                           fontSize: 20,
                           fontWeight: FontWeight.w700,
                         ),
@@ -201,5 +190,70 @@ class ClockWidget extends StatelessWidget {
     return flag
         ? day + MyTime().getTimeFromDateTime(time2)
         : MyTime().getTimeFromDateTime(time) + hour;
+  }
+
+  Color getColor(
+    Box box,
+    bool isActive,
+    MultiTweenValues<_ClockWidgetProps> value,
+  ) {
+    if (box.get("clock_widget_old") != null &&
+        box.get("clock_widget_old") != isActive) {
+      return value.get(_ClockWidgetProps.color);
+    } else {
+      if (isActive) {
+        return Color(0xFFBE97E5);
+      } else {
+        return Color(0xFF65C7FF);
+      }
+    }
+  }
+
+  Widget getImage(
+    Box box,
+    bool isActive,
+    MultiTweenValues<_ClockWidgetProps> value,
+  ) {
+    if (box.get("clock_widget_old") != null &&
+        box.get("clock_widget_old") != isActive) {
+      return Stack(
+        children: [
+          Center(
+            child: SvgPicture.asset(
+              "res/bell_icon.svg",
+              color: Colors.white
+                  .withOpacity(1.0 - value.get(_ClockWidgetProps.opacity)),
+              width: width * 0.135 * 0.42,
+              height: width * 0.135 * 0.47,
+            ),
+          ),
+          Center(
+            child: SvgPicture.asset(
+              "res/bed_icon.svg",
+              color: Colors.white
+                  .withOpacity(value.get(_ClockWidgetProps.opacity)),
+            ),
+          ),
+        ],
+      );
+    } else {
+      if (!isActive) {
+        return Center(
+          child: SvgPicture.asset(
+            "res/bell_icon.svg",
+            color: Colors.white,
+            width: width * 0.135 * 0.42,
+            height: width * 0.135 * 0.47,
+          ),
+        );
+      } else {
+        return Center(
+          child: SvgPicture.asset(
+            "res/bed_icon.svg",
+            color: Colors.white,
+          ),
+        );
+      }
+    }
   }
 }
