@@ -14,7 +14,7 @@ enum _ClockWidgetProps {
 class ClockWidget extends StatelessWidget {
   final bool isActive;
   final double width;
-  Box box;
+  final Box box;
 
   ClockWidget({
     required this.isActive,
@@ -22,7 +22,7 @@ class ClockWidget extends StatelessWidget {
     required this.box,
   });
 
-  var _ClockWidgetTween = MultiTween<_ClockWidgetProps>()
+  final MultiTween<_ClockWidgetProps> _clockWidgetTween = MultiTween<_ClockWidgetProps>()
     ..add(
       _ClockWidgetProps.color,
       Color(0xFFBE97E5).tweenTo(Color(0xFF65C7FF)),
@@ -40,7 +40,7 @@ class ClockWidget extends StatelessWidget {
       control: isActive
           ? CustomAnimationControl.play
           : CustomAnimationControl.playReverse,
-      tween: _ClockWidgetTween,
+      tween: _clockWidgetTween,
       curve: Curves.easeInOut,
       builder: _clockWidgetBuilder,
     );

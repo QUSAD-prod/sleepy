@@ -12,8 +12,8 @@ enum _ButtonProps {
 class MyButton extends StatelessWidget {
 
   final bool isActive;
-  Function onClick;
-  Box box;
+  final Function onClick;
+  final Box box;
 
   MyButton({
     required this.isActive,
@@ -21,7 +21,7 @@ class MyButton extends StatelessWidget {
     required this.box,
   });
 
-  var ButtonTween = MultiTween<_ButtonProps>()
+  final MultiTween<_ButtonProps> buttonTween = MultiTween<_ButtonProps>()
     ..add(
       _ButtonProps.color,
       Color(0xFFFFFFFF).withOpacity(0.0).tweenTo(Color(0xFF5868F0)),
@@ -47,7 +47,7 @@ class MyButton extends StatelessWidget {
       control: !isActive
           ? CustomAnimationControl.play
           : CustomAnimationControl.playReverse,
-      tween: ButtonTween,
+      tween: buttonTween,
       curve: Curves.easeInOut,
       builder: _buttonBuilder,
     );
