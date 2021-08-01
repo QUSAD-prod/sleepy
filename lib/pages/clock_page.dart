@@ -96,8 +96,8 @@ class _ClockPageState extends State<ClockPage> {
 
   void alarmReset(Box box) {
     //TODO add stats
-    box.put("alarm_start", null);
-    box.put("alarm_stop", null);
+    box.delete("alarm_start");
+    box.delete("alarm_stop");
   }
 
   Function buttonClick(Box box) {
@@ -120,7 +120,7 @@ class _ClockPageState extends State<ClockPage> {
             }
           else
             {
-              //alarmReset(box),
+              alarmReset(box),
               flutterLocalNotificationsPlugin.cancel(0),
             }
         };
@@ -143,6 +143,7 @@ class _ClockPageState extends State<ClockPage> {
       icon: 'sleepy_icon_notification',
       largeIcon: DrawableResourceAndroidBitmap('sleepy_icon_notification'),
       playSound: true,
+      sound: RawResourceAndroidNotificationSound(getMelody(box)),
       enableVibration: box.get('alarm_vibration', defaultValue: true),
       priority: Priority.high,
       importance: Importance.max,
@@ -167,5 +168,25 @@ class _ClockPageState extends State<ClockPage> {
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
+  }
+
+  String? getMelody(Box box) {
+    int melody = box.get("alarm_sound", defaultValue: 0);
+    switch (melody) {
+      case 0:
+        return "birds";
+      case 1:
+        return "instrumental";
+      case 2:
+        return "moon_discovery";
+      case 3:
+        return "rington";
+      case 4:
+        return null;
+      case 5:
+        return null;
+      default:
+        return null;
+    }
   }
 }

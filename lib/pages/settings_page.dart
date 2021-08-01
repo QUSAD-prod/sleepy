@@ -126,7 +126,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 child: Column(
                   children: [
                     listEl(
-                      "Ранний подъём",
+                      "Пение птиц",
                       0,
                       box.get("alarm_sound", defaultValue: 0),
                       width,
@@ -135,7 +135,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     seporator(width),
                     listEl(
-                      "Первые лучи",
+                      "Гитарная мелодия",
                       1,
                       box.get("alarm_sound", defaultValue: 0),
                       width,
@@ -144,7 +144,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     seporator(width),
                     listEl(
-                      "Гелиос",
+                      "Открытие луны",
                       2,
                       box.get("alarm_sound", defaultValue: 0),
                       width,
@@ -153,7 +153,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     seporator(width),
                     listEl(
-                      "Пение птиц",
+                      "Латрина",
                       3,
                       box.get("alarm_sound", defaultValue: 0),
                       width,
@@ -162,7 +162,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     seporator(width),
                     listEl(
-                      "Капель",
+                      "none",
                       4,
                       box.get("alarm_sound", defaultValue: 0),
                       width,
@@ -171,17 +171,8 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     seporator(width),
                     listEl(
-                      "Весенняя пора",
+                      "none",
                       5,
-                      box.get("alarm_sound", defaultValue: 0),
-                      width,
-                      height,
-                      box,
-                    ),
-                    seporator(width),
-                    listEl(
-                      "Своя мелодия",
-                      6,
                       box.get("alarm_sound", defaultValue: 0),
                       width,
                       height,

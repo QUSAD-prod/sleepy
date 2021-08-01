@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:simple_animations/simple_animations.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:supercharged/supercharged.dart';
 
 enum _SwitchBoxProps { paddingLeft, color }

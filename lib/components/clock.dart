@@ -15,7 +15,20 @@ class Clock extends StatelessWidget {
     return ValueListenableBuilder(
         valueListenable: Hive.box("data").listenable(),
         builder: (context, Box box, widget) {
-          DateTime bellTime = box.get("alarm_time", defaultValue: MyTime().getDefault());
+          DateTime bellTime = box.get(
+            "alarm_stop",
+            defaultValue: DateTime.now().add(
+              Duration(
+                hours: box
+                    .get("alarm_time", defaultValue: MyTime().getDefault())
+                    .hour,
+                minutes: box
+                    .get("alarm_time", defaultValue: MyTime().getDefault())
+                    .minute,
+              ),
+            ),
+          ).add(Duration(hours: 3));
+          print(bellTime);
           return Container(
             child: CustomPaint(
               painter: ClockPaint(),
@@ -27,7 +40,7 @@ class Clock extends StatelessWidget {
                     height: height,
                     bell: true,
                     bed: false,
-                    bellAngle: (bellTime.hour + (bellTime.minute / 60))/24,
+                    bellAngle: (bellTime.hour + (bellTime.minute / 60)) / 24,
                   ),
                 ],
               ),

@@ -66,7 +66,7 @@ class ClockWidget extends StatelessWidget {
   }
 
   String getWidgetText1(Box box, bool flag) {
-    DateTime timeStop = box.get("alarm_stop");
+    DateTime timeStop = box.get("alarm_stop", defaultValue: DateTime.now());
     DateTime now = DateTime.now();
     DateTime time = timeStop.add(Duration(hours: -now.hour, minutes: -now.minute,));
     String hour;
