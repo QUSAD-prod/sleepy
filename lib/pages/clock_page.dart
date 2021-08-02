@@ -182,11 +182,13 @@ class _ClockPageState extends State<ClockPage> {
       case 3:
         return "rington";
       case 4:
-        return null;
+        return "garmony";
       case 5:
-        return null;
+        return "vertu";
+      case 6:
+        return "trap";
       default:
-        return null;
+        return "birds";
     }
   }
 }

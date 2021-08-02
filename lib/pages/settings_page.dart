@@ -162,7 +162,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     seporator(width),
                     listEl(
-                      "none",
+                      "Гармония",
                       4,
                       box.get("alarm_sound", defaultValue: 0),
                       width,
@@ -171,8 +171,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     seporator(width),
                     listEl(
-                      "none",
+                      "Вертулион",
                       5,
+                      box.get("alarm_sound", defaultValue: 0),
+                      width,
+                      height,
+                      box,
+                    ),
+                    seporator(width),
+                    listEl(
+                      "Тримиол",
+                      6,
                       box.get("alarm_sound", defaultValue: 0),
                       width,
                       height,
