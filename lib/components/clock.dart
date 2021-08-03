@@ -27,7 +27,7 @@ class Clock extends StatelessWidget {
                     .minute,
               ),
             ),
-          ).add(Duration(hours: 3));
+          );
           print(bellTime);
           return Container(
             child: CustomPaint(
