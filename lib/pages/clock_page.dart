@@ -121,7 +121,7 @@ class _ClockPageState extends State<ClockPage> {
           else
             {
               alarmReset(box),
-              flutterLocalNotificationsPlugin.cancel(0),
+              flutterLocalNotificationsPlugin.cancelAll(),
             }
         };
   }
@@ -132,62 +132,67 @@ class _ClockPageState extends State<ClockPage> {
       defaultValue: MyTime().getDefault(),
     );
 
-    var scheduledNotificationDateTime = tz.TZDateTime.now(tz.local).add(
-      Duration(hours: time.hour, minutes: time.minute),
-    );
-
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      'alarm',
-      'sleepy',
-      'sleepy alarm',
-      icon: 'sleepy_icon_notification',
-      largeIcon: DrawableResourceAndroidBitmap('sleepy_icon_notification'),
-      playSound: true,
-      sound: RawResourceAndroidNotificationSound(getMelody(box)),
-      enableVibration: box.get('alarm_vibration', defaultValue: true),
-      priority: Priority.high,
-      importance: Importance.max,
-      showWhen: false,
-    );
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
-    );
-    var platformChannelSpecifics = NotificationDetails(
-      android: androidPlatformChannelSpecifics,
-      iOS: iOSPlatformChannelSpecifics,
-    );
     await flutterLocalNotificationsPlugin.zonedSchedule(
-      0,
+      box.get("alarm_channel", defaultValue: 0),
       "Sleepy - Новый подход ко сну",
       "Пора вставать",
-      scheduledNotificationDateTime,
-      platformChannelSpecifics,
+      tz.TZDateTime.now(tz.local).add(
+        Duration(hours: time.hour, minutes: time.minute),
+      ),
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          ('alarm' + box.get("alarm_channel", defaultValue: 0).toString()),
+          'sleepy',
+          'sleepy alarm',
+          icon: 'sleepy_icon_notification',
+          largeIcon: DrawableResourceAndroidBitmap('sleepy_icon_notification'),
+          playSound: true,
+          sound: RawResourceAndroidNotificationSound(getMelody(box)),
+          enableVibration: box.get('alarm_vibration', defaultValue: true),
+          priority: Priority.high,
+          importance: Importance.max,
+          showWhen: false,
+        ),
+        iOS: IOSNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
     );
+    box.put("alarm_channel", box.get("alarm_channel", defaultValue: 0) + 1);
   }
 
   String? getMelody(Box box) {
     int melody = box.get("alarm_sound", defaultValue: 0);
+    print(melody);
     switch (melody) {
       case 0:
+        print("birds");
         return "birds";
       case 1:
+        print("instrumental");
         return "instrumental";
       case 2:
+        print("moon_discovery");
         return "moon_discovery";
       case 3:
+        print("rington");
         return "rington";
       case 4:
+        print("garmony");
         return "garmony";
       case 5:
+        print("vertu");
         return "vertu";
       case 6:
+        print("trap");
         return "trap";
       default:
+        print("birds");
         return "birds";
     }
   }

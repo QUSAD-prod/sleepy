@@ -335,7 +335,7 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       },
     );
-    if (temp != null) {
+    if (temp != null && (temp.hour != 0 || temp.minute != 0)) {
       box.put("alarm_time", MyTime().addTime(temp.hour, temp.minute));
     }
   }
