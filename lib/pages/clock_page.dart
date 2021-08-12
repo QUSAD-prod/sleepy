@@ -1,4 +1,5 @@
 import 'dart:async';
+//import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:sleepy/components/clock.dart';
@@ -6,6 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sleepy/components/clockWidget.dart';
 import 'package:sleepy/components/clock_page_button.dart';
+import 'package:sleepy/components/stats_api.dart';
 import 'package:sleepy/components/time.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -14,6 +16,10 @@ import '../main.dart';
 class ClockPage extends StatefulWidget {
   @override
   _ClockPageState createState() => _ClockPageState();
+}
+
+void setAlarm() {
+  print("alarm");
 }
 
 class _ClockPageState extends State<ClockPage> {
@@ -94,12 +100,6 @@ class _ClockPageState extends State<ClockPage> {
         });
   }
 
-  void alarmReset(Box box) {
-    //TODO add stats
-    box.delete("alarm_start");
-    box.delete("alarm_stop");
-  }
-
   Function buttonClick(Box box) {
     DateTime temp = box.get("alarm_time", defaultValue: MyTime().getDefault());
     return () => {
@@ -117,14 +117,26 @@ class _ClockPageState extends State<ClockPage> {
                 ),
               ),
               addNotification(box),
+              //addAlarm(box),
             }
           else
             {
-              alarmReset(box),
+              StatsApi().alarmReset(box),
               flutterLocalNotificationsPlugin.cancelAll(),
             }
         };
   }
+
+  // Future<void> addAlarm(Box box) async {
+  //   await AndroidAlarmManager.oneShot(
+  //     Duration(seconds: 10),
+  //     10,
+  //     setAlarm,
+  //     alarmClock: true,
+  //     exact: true,
+  //     wakeup: true,
+  //   );
+  // }
 
   Future<void> addNotification(Box box) async {
     DateTime time = box.get(
@@ -144,8 +156,8 @@ class _ClockPageState extends State<ClockPage> {
           ('alarm' + box.get("alarm_channel", defaultValue: 0).toString()),
           'sleepy',
           'sleepy alarm',
-          icon: 'sleepy_icon_notification',
-          largeIcon: DrawableResourceAndroidBitmap('sleepy_icon_notification'),
+          icon: 'ic_stat_bell',
+          largeIcon: DrawableResourceAndroidBitmap('ic_notification_big'),
           playSound: true,
           sound: RawResourceAndroidNotificationSound(getMelody(box)),
           enableVibration: box.get('alarm_vibration', defaultValue: true),
@@ -168,31 +180,22 @@ class _ClockPageState extends State<ClockPage> {
 
   String? getMelody(Box box) {
     int melody = box.get("alarm_sound", defaultValue: 0);
-    print(melody);
     switch (melody) {
       case 0:
-        print("birds");
         return "birds";
       case 1:
-        print("instrumental");
         return "instrumental";
       case 2:
-        print("moon_discovery");
         return "moon_discovery";
       case 3:
-        print("rington");
         return "rington";
       case 4:
-        print("garmony");
         return "garmony";
       case 5:
-        print("vertu");
         return "vertu";
       case 6:
-        print("trap");
         return "trap";
       default:
-        print("birds");
         return "birds";
     }
   }

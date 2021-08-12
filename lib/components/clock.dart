@@ -28,7 +28,6 @@ class Clock extends StatelessWidget {
               ),
             ),
           );
-          print(bellTime);
           return Container(
             child: CustomPaint(
               painter: ClockPaint(),

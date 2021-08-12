@@ -5,7 +5,6 @@ import 'package:sleepy/pages/stats_page.dart';
 import 'bottom_panel_icons_icons.dart';
 
 class MyBottomNavigation extends StatefulWidget {
-
   @override
   _MyBottomNavigationState createState() => _MyBottomNavigationState();
 }

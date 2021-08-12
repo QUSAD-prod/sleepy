@@ -38,7 +38,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                margin: EdgeInsets.only(top: 48.0),
+                margin: EdgeInsets.only(top: height * 0.06),
               ),
               Container(
                 child: Text(

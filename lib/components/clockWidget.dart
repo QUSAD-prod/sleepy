@@ -3,6 +3,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sleepy/components/time.dart';
+
 class ClockWidget extends StatelessWidget {
   final bool isActive;
   final double width;
@@ -40,7 +41,9 @@ class ClockWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    isActive ? getWidgetText1(box, true) : getWidgetText1(box, false),
+                    isActive
+                        ? getWidgetText1(box, true)
+                        : getWidgetText1(box, false),
                     style: TextStyle(
                       color: Color(0xFF9B99A9),
                       fontSize: 14,
@@ -48,7 +51,9 @@ class ClockWidget extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    isActive ? getWidgetText2(box, true) : getWidgetText2(box, false),
+                    isActive
+                        ? getWidgetText2(box, true)
+                        : getWidgetText2(box, false),
                     style: TextStyle(
                       color: Color(0xFF160647),
                       fontSize: 20,
@@ -68,7 +73,10 @@ class ClockWidget extends StatelessWidget {
   String getWidgetText1(Box box, bool flag) {
     DateTime timeStop = box.get("alarm_stop", defaultValue: DateTime.now());
     DateTime now = DateTime.now();
-    DateTime time = timeStop.add(Duration(hours: -now.hour, minutes: -now.minute,));
+    DateTime time = timeStop.add(Duration(
+      hours: -now.hour,
+      minutes: -now.minute,
+    ));
     String hour;
     switch (time.hour) {
       case 1:
@@ -94,8 +102,12 @@ class ClockWidget extends StatelessWidget {
 
   String getWidgetText2(Box box, bool flag) {
     DateTime time = box.get("alarm_time", defaultValue: MyTime().getDefault());
-    DateTime time2 =
-        DateTime.now().add(Duration(hours: time.hour, minutes: time.minute));
+    DateTime time2;
+    if (flag) {
+      time2 = box.get("alarm_stop");
+    } else {
+      time2 = DateTime.now();
+    }
     String hour;
     String day;
     switch (time.hour) {
@@ -156,5 +168,4 @@ class ClockWidget extends StatelessWidget {
       );
     }
   }
-
 }
