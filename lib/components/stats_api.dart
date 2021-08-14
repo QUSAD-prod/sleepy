@@ -14,7 +14,7 @@ class StatsApi {
           now.year.toString();
       DateTime time =
           box.get("alarm_time", defaultValue: MyTime().getDefault());
-      double value = time.hour + (time.minute / 60);
+      double value = double.parse((time.hour + (time.minute / 60)).toStringAsFixed(2));
       if (box.get("statistics") != null) {
         Map map = box.get("statistics");
         if (map.containsKey(key)) {
@@ -51,7 +51,8 @@ class StatsApi {
           now.year.toString();
       DateTime time =
           box.get("alarm_time", defaultValue: MyTime().getDefault());
-      double value = time.hour + (time.minute / 60);
+      double value = double.parse((time.hour + (time.minute / 60)).toStringAsFixed(2));
+      print(value);
       if (box.get("statistics") != null) {
         Map map = box.get("statistics");
         if (map.containsKey(key)) {
@@ -71,6 +72,7 @@ class StatsApi {
           map,
         );
       }
+      box.put("is_sleep", !box.get("is_sleep", defaultValue: false));
       box.delete("alarm_start");
       box.delete("alarm_stop");
     }
@@ -116,6 +118,6 @@ class StatsApi {
       time += value;
     });
     time /= map.length;
-    return time;
+    return double.parse(time.toStringAsFixed(2));
   }
 }

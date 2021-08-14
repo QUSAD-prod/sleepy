@@ -267,7 +267,7 @@ class _StatsPageState extends State<StatsPage> {
                         ),
                         Text(
                           statistics.length > 1
-                              ? "Это на " + getDeltaHours(hour, timeSleep) + ", чем обычно"
+                              ? getDeltaHours(hour, timeSleep)
                               : "Дополнительная статистика недоступна",
                           style: getDayGraphTextStyle(),
                         ),
@@ -380,9 +380,11 @@ class _StatsPageState extends State<StatsPage> {
 
   String getDeltaHours(double hour, double stats) {
     if (hour > stats) {
-      return (hour-stats).toString() + getHourString((hour-stats).toInt()) + " больше";
+      return "Это на " + (hour-stats).toString() + getHourString((hour-stats).toInt()) + " больше, чем обычно";
+    } else if (hour < stats) {
+      return "Это на " + (stats-hour).toString() + getHourString((stats-hour).toInt()) + " меньше, чем обычно";
     } else {
-      return (stats-hour).toString() + getHourString((stats-hour).toInt()) + " меньше";
+      return "Это столько же, сколько обычно";
     }
   }
 

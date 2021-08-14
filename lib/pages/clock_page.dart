@@ -31,6 +31,9 @@ class _ClockPageState extends State<ClockPage> {
     return ValueListenableBuilder(
         valueListenable: Hive.box("data").listenable(),
         builder: (context, Box box, widget) {
+          if (box.get("is_sleep", defaultValue: false)) {
+            StatsApi().alarmCheck(box);
+          }
           return Container(
             width: double.infinity,
             decoration: BoxDecoration(
