@@ -41,11 +41,11 @@ class _StatsPageState extends State<StatsPage> {
           Container(
             margin: EdgeInsets.only(top: height * 0.029),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(24.0),
+              borderRadius: BorderRadius.circular(18.0),
               color: Colors.white,
             ),
-            width: width * 0.829,
-            height: height * 0.52,
+            width: width * 0.9,
+            height: height * 0.58,
             child: Container(
               margin: EdgeInsets.all(height * 0.029),
               child: Column(
@@ -56,8 +56,10 @@ class _StatsPageState extends State<StatsPage> {
                       borderRadius: BorderRadius.circular(8.0),
                       color: Color(0xFF1F767680).withOpacity(0.12),
                     ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 3.0, vertical: 2.0),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 3.0,
+                      vertical: 2.0,
+                    ),
                     child: Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
@@ -122,13 +124,15 @@ class _StatsPageState extends State<StatsPage> {
                       getText(box),
                       textAlign: TextAlign.start,
                       style: TextStyle(
-                        color: Color(0xFF160647),
+                        color: Colors.black.withOpacity(0.9),
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
+                  activeGraph == 1 ? Expanded(child: Container()) : Container(),
                   getStats(width, height, box),
+                  activeGraph == 1 ? Expanded(child: Container()) : Container(),
                 ],
               ),
             ),
@@ -255,7 +259,7 @@ class _StatsPageState extends State<StatsPage> {
                       children: [
                         Text(
                           "Вы спали: " +
-                              hour.toString() +
+                              hour.toStringAsFixed(2) +
                               getHourString(hour.toInt()),
                           style: getDayGraphTextStyle(),
                         ),
@@ -279,7 +283,9 @@ class _StatsPageState extends State<StatsPage> {
                         ),
                         Text(
                           (box.get("statistics") as Map).length > 1
-                              ? "Среднее время сна: " + timeSleep.toString() + getHourString(timeSleep.toInt())
+                              ? "Среднее время сна: " +
+                                  timeSleep.toString() +
+                                  getHourString(timeSleep.toInt())
                               : "Среднее время сна недоступно",
                           style: getDayGraphTextStyle(),
                         ),
@@ -380,9 +386,15 @@ class _StatsPageState extends State<StatsPage> {
 
   String getDeltaHours(double hour, double stats) {
     if (hour > stats) {
-      return "Это на " + (hour-stats).toString() + getHourString((hour-stats).toInt()) + " больше, чем обычно";
+      return "Это на " +
+          (hour - stats).toString() +
+          getHourString((hour - stats).toInt()) +
+          " больше, чем обычно";
     } else if (hour < stats) {
-      return "Это на " + (stats-hour).toString() + getHourString((stats-hour).toInt()) + " меньше, чем обычно";
+      return "Это на " +
+          (stats - hour).toString() +
+          getHourString((stats - hour).toInt()) +
+          " меньше, чем обычно";
     } else {
       return "Это столько же, сколько обычно";
     }
@@ -390,7 +402,7 @@ class _StatsPageState extends State<StatsPage> {
 
   TextStyle getDayGraphTextStyle() {
     return TextStyle(
-      color: Color(0xFF160647),
+      color: Colors.black.withOpacity(0.9),
       fontSize: 16,
       fontWeight: FontWeight.w500,
     );
@@ -460,7 +472,7 @@ class _StatsPageState extends State<StatsPage> {
     return Text(
       text,
       style: TextStyle(
-        color: Color(0xFF9B99A9),
+        color: Colors.black.withOpacity(0.5),
         fontSize: 14,
         fontWeight: FontWeight.w500,
       ),
@@ -470,13 +482,13 @@ class _StatsPageState extends State<StatsPage> {
   TextStyle getTextStyle(int id, int activeGraph) {
     if (id != activeGraph) {
       return TextStyle(
-        color: Color(0xFF160647),
+        color: Colors.black.withOpacity(0.9),
         fontSize: 14,
         fontWeight: FontWeight.w500,
       );
     } else {
       return TextStyle(
-        color: Color(0xFF160647),
+        color: Colors.black.withOpacity(0.9),
         fontSize: 14,
         fontWeight: FontWeight.w600,
       );
@@ -682,7 +694,10 @@ class _StatsPageState extends State<StatsPage> {
         ),
         Container(
           margin: EdgeInsets.only(
-              left: width * 0.070, top: height * 0.008, right: width * 0.022),
+            left: width * 0.070,
+            top: height * 0.008,
+            right: width * 0.022,
+          ),
           child: Row(
             children: [
               Expanded(child: Container()),

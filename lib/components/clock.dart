@@ -1,8 +1,6 @@
 import 'dart:math';
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sleepy/components/indicators.dart';
 import 'package:sleepy/components/time.dart';
@@ -50,13 +48,13 @@ class Clock extends StatelessWidget {
 
   Widget decoration(double width, height) {
     TextStyle textA = TextStyle(
-      color: Color(0xFF160647),
+      color: Colors.black,
       fontSize: 16,
       fontWeight: FontWeight.w600,
     );
 
     TextStyle textB = TextStyle(
-      color: Color(0xFFA4A0BD),
+      color: Colors.black.withOpacity(0.5),
       fontSize: 16,
       fontWeight: FontWeight.w600,
     );

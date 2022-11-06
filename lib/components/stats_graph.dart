@@ -43,7 +43,10 @@ class StatsGraph extends StatelessWidget {
           width: this.width,
           decoration: BoxDecoration(
             color: Color(0xFF65C7FF),
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(6.0), topRight: Radius.circular(6.0),)
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(6.0),
+              topRight: Radius.circular(6.0),
+            ),
           ),
         ),
       ],

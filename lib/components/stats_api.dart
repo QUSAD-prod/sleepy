@@ -14,7 +14,8 @@ class StatsApi {
           now.year.toString();
       DateTime time =
           box.get("alarm_time", defaultValue: MyTime().getDefault());
-      double value = double.parse((time.hour + (time.minute / 60)).toStringAsFixed(2));
+      double value =
+          double.parse((time.hour + (time.minute / 60)).toStringAsFixed(2));
       if (box.get("statistics") != null) {
         Map map = box.get("statistics");
         if (map.containsKey(key)) {
@@ -51,12 +52,13 @@ class StatsApi {
           now.year.toString();
       DateTime time =
           box.get("alarm_time", defaultValue: MyTime().getDefault());
-      double value = double.parse((time.hour + (time.minute / 60)).toStringAsFixed(2));
+      double value =
+          double.parse((time.hour + (time.minute / 60)).toStringAsFixed(2));
       print(value);
       if (box.get("statistics") != null) {
         Map map = box.get("statistics");
         if (map.containsKey(key)) {
-          map.update(key, (oldValue) => oldValue + value);
+          map.update(key, (oldValue) => (oldValue as double) + value);
         } else {
           map[key] = value;
         }

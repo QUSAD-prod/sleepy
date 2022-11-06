@@ -1,47 +1,33 @@
-//import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:hive/hive.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:sleepy/components/bottom_navigation.dart';
+import 'package:sleepy/pages/splash_screen.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
+AndroidInitializationSettings initializationSettingsAndroid =
+    AndroidInitializationSettings('ic_stat_bell');
+InitializationSettings initializationSettings = InitializationSettings(
+  android: initializationSettingsAndroid,
+);
+
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   await Hive.initFlutter();
   await Hive.openBox<dynamic>("data");
-
-  var initializationSettingsAndroid =
-      AndroidInitializationSettings('ic_stat_bell');
-
-  var initializationSettingsIOS = IOSInitializationSettings(
-    requestAlertPermission: true,
-    requestBadgePermission: true,
-    requestSoundPermission: true,
-    onDidReceiveLocalNotification: (id, title, body, payload) async {},
-  );
-
-  var initializationSettings = InitializationSettings(
-    android: initializationSettingsAndroid,
-    iOS: initializationSettingsIOS,
-  );
-
-  await flutterLocalNotificationsPlugin.initialize(
-    initializationSettings,
-    onSelectNotification: (String? payload) async {
-      if (payload != null) {
-        debugPrint('notification payload: ' + payload);
-      }
-    },
-  );
+  await flutterLocalNotificationsPlugin.initialize(initializationSettings);
 
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
@@ -50,9 +36,22 @@ class MyApp extends StatelessWidget {
         DeviceOrientation.portraitDown,
       ],
     );
+
     return MaterialApp(
-      theme: ThemeData(fontFamily: 'Inter'),
-      home: MyBottomNavigation(),
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        Locale('ru'),
+      ],
+      theme: ThemeData(
+        useMaterial3: true,
+        fontFamily: 'Inter',
+        primarySwatch: Colors.indigo,
+      ),
+      home: const SplashScreeen(),
     );
   }
 }
