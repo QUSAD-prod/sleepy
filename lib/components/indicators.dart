@@ -73,11 +73,11 @@ class Indicators extends StatelessWidget {
                   child: new Transform.rotate(
                     angle: -value.get(_IndicatorsProps.bellPosition),
                     child: SvgPicture.asset(
-                        "res/bell_clock.svg",
-                        color: Color(0xFF42B4F4),
-                        width: 0.048 * width,
-                        height: 0.05 * width,
-                      ),
+                      "res/bell_clock.svg",
+                      color: Color(0xFF42B4F4),
+                      width: 0.048 * width,
+                      height: 0.05 * width,
+                    ),
                   ),
                 ),
               ],

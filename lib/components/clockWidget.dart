@@ -18,10 +18,10 @@ class ClockWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(16.0),
+      padding: EdgeInsets.all(12.0),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(24.0),
+        borderRadius: BorderRadius.circular(18.0),
       ),
       child: Container(
         child: Row(
@@ -45,7 +45,7 @@ class ClockWidget extends StatelessWidget {
                         ? getWidgetText1(box, true)
                         : getWidgetText1(box, false),
                     style: TextStyle(
-                      color: Color(0xFF9B99A9),
+                      color: Colors.black.withOpacity(0.5),
                       fontSize: 14,
                       fontWeight: FontWeight.w500,
                     ),
@@ -55,9 +55,9 @@ class ClockWidget extends StatelessWidget {
                         ? getWidgetText2(box, true)
                         : getWidgetText2(box, false),
                     style: TextStyle(
-                      color: Color(0xFF160647),
+                      color: Colors.black.withOpacity(0.9),
                       fontSize: 20,
-                      fontWeight: FontWeight.w700,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ],
@@ -73,30 +73,14 @@ class ClockWidget extends StatelessWidget {
   String getWidgetText1(Box box, bool flag) {
     DateTime timeStop = box.get("alarm_stop", defaultValue: DateTime.now());
     DateTime now = DateTime.now();
-    DateTime time = timeStop.add(Duration(
-      hours: -now.hour,
-      minutes: -now.minute,
-    ));
-    String hour;
-    switch (time.hour) {
-      case 1:
-      case 21:
-        hour = " час";
-        break;
-      case 2:
-      case 3:
-      case 4:
-      case 22:
-      case 23:
-      case 24:
-        hour = " часа";
-        break;
-      default:
-        hour = " часов";
-        break;
-    }
+    DateTime time = timeStop.add(
+      Duration(
+        hours: -now.hour,
+        minutes: -now.minute,
+      ),
+    );
     return flag
-        ? "Разбужу через " + MyTime().getTimeFromDateTime(time) + hour
+        ? "Разбужу через " + MyTime().getTimeFromDateTime(time)
         : "Вы хотите спать";
   }
 

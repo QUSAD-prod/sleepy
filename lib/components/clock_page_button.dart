@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class MyButton extends StatelessWidget {
-
   final bool isActive;
   final Function onClick;
   final Box box;
@@ -17,13 +16,8 @@ class MyButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: isActive ? Colors.transparent : Color(0xFF5868F0),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(16.0),
-        border: Border.all(
-          color: Color(0xFF5868F0),
-          width: 2.0,
-          style: BorderStyle.solid,
-        ),
       ),
       child: Material(
         color: Colors.transparent,
@@ -31,16 +25,26 @@ class MyButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(16.0),
           onTap: () => onClick(),
           child: Container(
-            padding: EdgeInsets.symmetric(vertical: 24.5),
+            padding: EdgeInsets.symmetric(vertical: 18),
             child: Center(
-              child: Text(
-                isActive ? "Перестать спать" : "Пойти спать",
-                style: TextStyle(
-                  color: Color(0xFFFFFFFF),
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    !isActive ? Icons.bedtime : Icons.bedtime_off,
+                    color: Colors.black.withOpacity(0.9),
+                  ),
+                  Padding(padding: EdgeInsets.only(left: 4)),
+                  Text(
+                    isActive ? "Перестать спать" : "Пойти спать",
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.9),
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
               ),
             ),
           ),

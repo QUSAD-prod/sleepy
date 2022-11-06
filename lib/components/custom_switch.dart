@@ -28,7 +28,7 @@ class CustomSwitch extends StatelessWidget {
           ? CustomAnimationControl.play
           : CustomAnimationControl.playReverse,
       startPosition: switched ? 1.0 : 0.0,
-      duration: tween.duration * 1.2,
+      duration: tween.duration,
       tween: tween,
       curve: Curves.easeInOut,
       builder: _buildSwitchBox,

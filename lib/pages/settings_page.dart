@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:sleepy/components/custom_switch.dart';
 import 'package:sleepy/components/time.dart';
@@ -28,7 +27,12 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           child: Column(
+            mainAxisSize: MainAxisSize.max,
             children: [
+              Expanded(
+                child: Container(),
+                flex: 1,
+              ),
               Container(
                 child: Text(
                   "Настройки",
@@ -38,11 +42,17 @@ class _SettingsPageState extends State<SettingsPage> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                margin: EdgeInsets.only(top: height * 0.06),
+                margin: EdgeInsets.only(
+                  top: MediaQuery.of(context).viewPadding.top,
+                ),
+              ),
+              Expanded(
+                child: Container(),
+                flex: 1,
               ),
               Container(
                 child: Text(
-                  "Установка времени и выбор мелодии",
+                  "Установка времени и настройка вибрации",
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
                     fontSize: 18,
@@ -50,8 +60,11 @@ class _SettingsPageState extends State<SettingsPage> {
                   ),
                   textAlign: TextAlign.center,
                 ),
-                width: width * 0.8,
-                margin: EdgeInsets.only(top: 4.0),
+                width: width * 0.9,
+              ),
+              Expanded(
+                child: Container(),
+                flex: 2,
               ),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: width * 0.05),
@@ -59,15 +72,14 @@ class _SettingsPageState extends State<SettingsPage> {
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(16.0)),
                 ),
-                margin: EdgeInsets.only(top: 20.0),
-                width: (width * 0.85),
+                width: (width * 0.9),
                 child: Row(
                   children: [
                     Container(
                       child: Text(
                         "Длительность сна",
                         style: TextStyle(
-                          color: Color(0xFF160647),
+                          color: Colors.black.withOpacity(0.9),
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                         ),
@@ -83,18 +95,16 @@ class _SettingsPageState extends State<SettingsPage> {
                       child: Container(
                         decoration: BoxDecoration(
                           border: Border.all(
-                              color: Color(0xFFBE97E5),
-                              width: 2.0,
-                              style: BorderStyle.solid),
+                            color: Color(0xFFBE97E5),
+                            width: 2.0,
+                            style: BorderStyle.solid,
+                          ),
                           borderRadius: BorderRadius.all(Radius.circular(8.0)),
                         ),
                         width: 94.0,
                         height: 52.0,
                         margin: EdgeInsets.symmetric(vertical: 8.0),
-                        padding: EdgeInsets.symmetric(vertical: 10.5),
                         child: Center(
-                          widthFactor: 94.0,
-                          heightFactor: 52.0,
                           child: Text(
                             MyTime().getTimeFromDateTime(
                               box.get(
@@ -103,9 +113,9 @@ class _SettingsPageState extends State<SettingsPage> {
                               ),
                             ),
                             style: TextStyle(
-                              color: Color(0xFF160647),
+                              color: Colors.black.withOpacity(0.9),
                               fontSize: 25,
-                              fontWeight: FontWeight.w600,
+                              fontWeight: FontWeight.w500,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -115,14 +125,17 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
               ),
+              Expanded(
+                child: Container(),
+                flex: 2,
+              ),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(16.0)),
+                  borderRadius: BorderRadius.all(Radius.circular(18.0)),
                 ),
-                margin: EdgeInsets.only(top: 20.0),
                 padding: EdgeInsets.symmetric(vertical: height * 0.015),
-                width: width * 0.85,
+                width: width * 0.9,
                 child: Column(
                   children: [
                     listEl(
@@ -190,24 +203,30 @@ class _SettingsPageState extends State<SettingsPage> {
                   ],
                 ),
               ),
+              Expanded(
+                child: Container(),
+                flex: 2,
+              ),
               Container(
                 padding: EdgeInsets.symmetric(
-                    horizontal: width * 0.05, vertical: height * 0.025),
+                  horizontal: width * 0.05,
+                  vertical: height * 0.025,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(16.0)),
                 ),
-                margin: EdgeInsets.only(top: 20.0),
-                width: (width * 0.85),
+                width: (width * 0.9),
                 child: Row(
                   children: [
                     Container(
                       child: Text(
                         "Вибрация",
                         style: TextStyle(
-                            color: Color(0xFF160647),
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500),
+                          color: Color(0xFF160647),
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                     Expanded(child: Container()),
@@ -232,6 +251,10 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ],
                 ),
+              ),
+              Expanded(
+                child: Container(),
+                flex: 2,
               ),
             ],
           ),
@@ -263,7 +286,7 @@ class _SettingsPageState extends State<SettingsPage> {
         color: Colors.transparent,
         child: InkWell(
           onTap: () => selectListEl(id, box),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(8),
           child: Container(
             height: height * 0.06,
             padding: EdgeInsets.symmetric(horizontal: width * 0.045),
@@ -308,9 +331,11 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   void selectListEl(int id, Box box) {
-    setState(() {
-      box.put("alarm_sound", id);
-    });
+    setState(
+      () {
+        box.put("alarm_sound", id);
+      },
+    );
   }
 
   Future<Null> selectTime(BuildContext context, Box box) async {
