@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:sleepy/pages/clock_page.dart';
 import 'package:sleepy/pages/settings_page.dart';
 import 'package:sleepy/pages/stats_page.dart';
-import 'bottom_panel_icons_icons.dart';
 
 class MyBottomNavigation extends StatefulWidget {
+  const MyBottomNavigation({Key? key}) : super(key: key);
+
   @override
   _MyBottomNavigationState createState() => _MyBottomNavigationState();
 }
@@ -12,33 +13,46 @@ class MyBottomNavigation extends StatefulWidget {
 class _MyBottomNavigationState extends State<MyBottomNavigation> {
   int _currentIndex = 0;
 
+  late final ClockPage clockPage;
+  late final StatsPage statsPage;
+  late final SettingsPage settingsPage;
+
+  @override
+  void initState() {
+    super.initState();
+    clockPage = ClockPage();
+    statsPage = StatsPage();
+    settingsPage = SettingsPage();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Scaffold(
       body: getBody(),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        backgroundColor: Color(0xFF3E42B2),
-        selectedItemColor: Colors.white,
-        currentIndex: _currentIndex,
-        unselectedItemColor: Colors.white.withOpacity(.40),
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-        onTap: (value) {
+      bottomNavigationBar: NavigationBar(
+        height: height * 0.09,
+        backgroundColor: Colors.white,
+        surfaceTintColor: Colors.white,
+        selectedIndex: _currentIndex,
+        onDestinationSelected: (value) {
           setState(() => _currentIndex = value);
         },
-        items: [
-          BottomNavigationBarItem(
-            label: "Время сна",
-            icon: Icon(BottomPanelIcons.bed),
+        destinations: const <Widget>[
+          NavigationDestination(
+            label: "Главная",
+            icon: Icon(Icons.bedtime_outlined),
+            selectedIcon: Icon(Icons.bedtime),
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             label: "Статистика",
-            icon: Icon(BottomPanelIcons.graph),
+            icon: Icon(Icons.insert_chart_outlined_rounded),
+            selectedIcon: Icon(Icons.insert_chart_rounded),
           ),
-          BottomNavigationBarItem(
+          NavigationDestination(
             label: "Настройки",
-            icon: Icon(BottomPanelIcons.settings),
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
           ),
         ],
       ),
@@ -48,13 +62,13 @@ class _MyBottomNavigationState extends State<MyBottomNavigation> {
   Widget getBody() {
     switch (this._currentIndex) {
       case 0:
-        return ClockPage();
+        return clockPage;
       case 1:
-        return StatsPage();
+        return statsPage;
       case 2:
-        return SettingsPage();
+        return settingsPage;
       default:
-        return ClockPage();
+        return clockPage;
     }
   }
 }
